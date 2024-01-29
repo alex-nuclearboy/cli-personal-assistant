@@ -1,6 +1,6 @@
 # Personal Assistant Bot
 
-[Introduction](#introduction) · [Features](#features) · [Getting Started](#getting-started) · [All Commands](#all-commands) · [Original Concept](#original-concept)
+[Introduction](#introduction) · [Documentation](#documentation) · [Features](#features) · [Getting Started](#getting-started) · [All Commands](#all-commands) · [Original Concept](#original-concept)
 
 ## Introduction
 
@@ -8,6 +8,11 @@ Welcome to the "Personal Assistant" bot project! This bot is crafted with a focu
 
 Distinguished by its user information presentation and command flexibility, this project stands as a testament to the versatility and power of Python-based solutions.
 From streamlined contact management to intelligent note-taking and file organization, every aspect of the bot is designed to make daily digital interactions more productive and seamless.
+
+## Documentation
+
+In addition to the source code, this repository includes UML diagrams of the project, providing a visual representation of the system's architecture and interactions.
+These diagrams are available in both PNG and [draw.io](https://app.diagrams.net/) formats, allowing for easy viewing.
 
 ## Features
 
