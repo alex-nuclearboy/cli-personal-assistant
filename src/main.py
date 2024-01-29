@@ -6,12 +6,14 @@ from prompt_toolkit.lexers import PygmentsLexer
 from pygments.lexers.sql import SqlLexer
 from src.classes import AddressBook, Name, Phone, Email, Address, Record
 from src.classes import Notebook, Note
+from src.classes import BasicInterface, ConsoleInterface
 from src.sorter import main as sort_main
 import random
 import textwrap
 
 address_book = AddressBook()
 notebook = Notebook()
+view = ConsoleInterface()
 
 # Completer for commands in terminal:
 sql_completer = WordCompleter([
@@ -57,7 +59,8 @@ def hello():
                "Thanks for being the awesome person you are!",
                "May your day be filled with love and happiness!"]
     random_choice = random.choice(choices)
-    return random_choice
+    view.display_message(random_choice)
+    return ""
 
 
 def help():
@@ -114,7 +117,8 @@ def help():
 
     table = tabulate(colored_commands,
                      headers=["Command", "Description"], tablefmt="fancy_grid")
-    return table
+    view.display_command_help(table)
+    return ""
 
 
 @input_error
@@ -220,9 +224,10 @@ def show_all_contacts():
                    colored("Email", 'blue'), colored("Address", 'cyan'),
                    colored("Birthday", 'green')]
         table = tabulate(table_data, headers=headers, tablefmt="fancy_grid")
-        return table
+        view.display_contact_info(f"Here are all the contacts saved in the Address Book:\n{table}")
     else:
-        return "Contact list is empty"
+        view.display_message("Contact list is empty")
+    return ""
 
 
 def exit_bot():
@@ -251,7 +256,7 @@ def search_contacts():
     query = input("Please enter a part of the name or phone number: ").strip()
     results = address_book.search_contacts(query)
     if results:
-        result = f"Search results for '{query}':\n"
+        result = ""
         for record in results:
             result += f"{record.name.value}:\n"
             phones_info = ', '.join(phone.value for phone in record.phones)
@@ -266,9 +271,10 @@ def search_contacts():
                 address.value for address in record.addresses)
             if address_info:
                 result += f"  Address: {address_info}\n"
-        return result
+        view.display_contact_info(f"Search results for '{query}':\n{result}")
     else:
-        return (f"No results found for '{query}'.")
+        view.display_message(f"No results found for '{query}'.")
+    return ""
 
 
 @input_error
@@ -359,7 +365,8 @@ def search_contact_by_birthday():
         phones_info = ', '.join(phone.value for phone in i.phones)
         result += (f"{i.name.value}:\n Phone numbers: {phones_info}\n"
                    f"Birthday: {i.birthday}\n")
-    return result
+    view.display_contact_info(f"The following contacts have a birthday in the next {request} days:\n{result}")
+    return ""
 
 
 @input_error
@@ -501,9 +508,10 @@ def find_note():
             ])
         headers = ["Title", "Author", "Created At", "Note", "Tags"]
         table = tabulate(table_data, headers=headers, tablefmt="fancy_grid")
-        return f"Found notes for query '{query}':\n" + table
+        view.display_note_info(f"Found notes for query '{query}':\n{table}")
     else:
-        return "No notes found with the given query."
+        view.display_note_info(f"No notes found with the given query '{query}'.")
+    return ""
 
 
 @input_error
@@ -518,10 +526,11 @@ def show_note_detail():
         result += (f"Created at: "
                    f"{note.created_at.strftime('%Y-%m-%d %H:%M:%S')}\n")
         result += f"Tags: {note.tags}\n"
-        result += f"Note:\n{wrapped_body}\n"
-        return result
+        result += f"Note:\n{wrapped_body}\n"        
+        view.display_note_info(f"Note Info:\n{result}\n")
     else:
-        return f"No note found with the title '{title}'."
+        view.display_message(f"No note found with the title '{title}'.")        
+    return ""
 
 
 @input_error
@@ -588,9 +597,10 @@ def show_all_notes():
             ])
         headers = ["Title", "Author", "Created At", "Note", "Tags"]
         table = tabulate(table_data, headers=headers, tablefmt="fancy_grid")
-        return "\nHere are all the notes saved in the Notebook:\n" + table
+        view.display_note_info(f"\nHere are all the notes saved in the Notebook:\n{table}\n")
     else:
-        return "No notes found in the Notebook"
+        view.display_note_info("No notes found in the Notebook")        
+    return ""
 
 
 @input_error
@@ -629,10 +639,10 @@ def sort_notes_by_tags():
             ])
         headers = ["Title", "Author", "Created At", "Note", "Tags"]
         table = tabulate(table_data, headers=headers, tablefmt="fancy_grid")
-        return ("Here are all the notes sorted by tag in alphabetical order:\n"
-                + table)
+        view.display_note_info(f"\nHere are all the notes sorted by tag in alphabetical order:\n{table}\n")        
     else:
-        return "No notes found in the Notebook"
+        view.display_note_info("No notes found in the Notebook")        
+    return ""
 
 
 @input_error
@@ -640,7 +650,8 @@ def find_notes_by_tags():
     tags = input("Please enter the tag by which to start searching: ").strip()
     results = notebook.find_notes_by_tags(tags)
     if not results:
-        return f"No notes found with the specified tag: {tags}."
+        view.display_note_info(f"No notes found with the specified tag: {tags}")
+        return ""
 
     table_data = []
     for note in results:
@@ -655,7 +666,8 @@ def find_notes_by_tags():
         ])
     headers = ["Title", "Author", "Created At", "Note", "Tags"]
     table = tabulate(table_data, headers=headers, tablefmt="fancy_grid")
-    return f"\nHere are the notes found by tags '{tags}':\n" + table
+    view.display_note_info(f"\nHere are the notes found by tags '{tags}':\n{table}\n")
+    return ""
 
 
 @input_error
