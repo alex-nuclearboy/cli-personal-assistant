@@ -1,7 +1,58 @@
 from datetime import datetime
 from collections import UserDict
+from abc import ABC, abstractmethod
 import re
 import pickle
+
+class BasicInterface(ABC):
+    """
+    An abstract class for user views.
+    """
+
+    @abstractmethod
+    def display_contact_info(self, result):
+        """
+        An abstract method for displaying contact information.
+        """
+        pass
+
+    @abstractmethod
+    def display_note_info(self, result):
+        """
+        An abstract method for displaying information about notes.
+        """
+        pass
+
+    @abstractmethod
+    def display_command_help(self):
+        """
+        An abstract method for displaying available commands.
+        """
+        pass
+
+    def display_message(self, message):
+        """
+        An abstract method for displaying a general message to the user.
+        """
+        print(message)
+
+
+class ConsoleInterface(BasicInterface):
+    """
+    A specific class for displaying information in the console interface.
+    """
+
+    def display_contact_info(self, result):
+        print(result)
+
+    def display_note_info(self, result):
+        print(result)
+
+    def display_command_help(self, commands):
+        print(f"Available Commands:\n{commands}\n")
+
+    def display_message(self, message):
+        print(message)
 
 
 class Field:
